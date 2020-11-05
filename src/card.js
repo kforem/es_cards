@@ -1,3 +1,6 @@
+const LIMIT_ASSIGNED = 'LIMIT_ASSIGNED';
+const CARD_WITHDRAWN = 'CARD_WITHDRAWN';
+const CARD_REPAID = 'CARD_REPAID';
 module.exports = function cardModule(now) {
     function card(id) {
 
@@ -19,13 +22,13 @@ module.exports = function cardModule(now) {
         }
 
         function apply(event) {
-            if (event.type === 'LIMIT_ASSIGNED') {
+            if (event.type === LIMIT_ASSIGNED) {
                 limit = event.amount;
             }
-            if (event.type === 'CARD_WITHDRAWN') {
+            if (event.type === CARD_WITHDRAWN) {
                 used += event.amount;
             }
-            if (event.type === 'CARD_REPAID') {
+            if (event.type === CARD_REPAID) {
                 used -= event.amount;
             }
         }
@@ -36,8 +39,9 @@ module.exports = function cardModule(now) {
                 if(limitAlreadyAssigned()) {
                     throw new Error('Cannot assign limit for the second time');
                 }
-                events.push({type: 'LIMIT_ASSIGNED', amount, card_id: id, date: now().toJSON()});
-                limit = amount;
+                const event = {type: LIMIT_ASSIGNED, amount, card_id: id, date: now().toJSON()};
+                events.push(event);
+                apply(event);
             },
             availableLimit,
             withdraw(amount) {
@@ -47,12 +51,14 @@ module.exports = function cardModule(now) {
                 if (notEnoughMoney(amount)) {
                     throw new Error('Not enough money');
                 }
-                events.push({type: 'CARD_WITHDRAWN', amount, card_id: id, date: now().toJSON()});
-                used += amount;
+                const event = {type: CARD_WITHDRAWN, amount, card_id: id, date: now().toJSON()};
+                events.push(event);
+                apply(event);
             },
             repay(amount) {
-                events.push({type: 'CARD_REPAID', amount, card_id: id, date: now().toJSON()});
-                used -= amount;
+                const event = {type: CARD_REPAID, amount, card_id: id, date: now().toJSON()};
+                events.push(event);
+                apply(event);
             },
             pendingEvents() {
                 return events;
