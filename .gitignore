@@ -3,6 +3,4 @@ node_modules
 test/componentTest.js
 src/server.js
 src/app.js
-src/es.js
-test/mongoCardRepositoryTest.js
-src/mongoCardRepository.js
+src/clientError.js
