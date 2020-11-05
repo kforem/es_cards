@@ -33,6 +33,11 @@ module.exports = function cardModule(now) {
             }
         }
 
+        function applyWithRecord(event) {
+            events.push(event);
+            apply(event);
+        }
+
         return {
             apply,
             assignLimit(amount) {
@@ -40,8 +45,7 @@ module.exports = function cardModule(now) {
                     throw new Error('Cannot assign limit for the second time');
                 }
                 const event = {type: LIMIT_ASSIGNED, amount, card_id: id, date: now().toJSON()};
-                events.push(event);
-                apply(event);
+                applyWithRecord(event);
             },
             availableLimit,
             withdraw(amount) {
@@ -52,13 +56,11 @@ module.exports = function cardModule(now) {
                     throw new Error('Not enough money');
                 }
                 const event = {type: CARD_WITHDRAWN, amount, card_id: id, date: now().toJSON()};
-                events.push(event);
-                apply(event);
+                applyWithRecord(event);
             },
             repay(amount) {
                 const event = {type: CARD_REPAID, amount, card_id: id, date: now().toJSON()};
-                events.push(event);
-                apply(event);
+                applyWithRecord(event);
             },
             pendingEvents() {
                 return events;
