@@ -20,11 +20,19 @@ function eventTracker(apply) {
 }
 
 module.exports = function cardModule(now) {
+    function recreateFrom(uuid, events) {
+        return events.reduce((card, event) => {
+            card.apply(event);
+            return card;
+        }, card(uuid));
+    }
+
     function card(id) {
 
         let limit;
         let used = 0;
         let events = [];
+        let {applyWithRecord, ...tracker} = eventTracker(apply);
 
         // invariant
         function limitAlreadyAssigned() {
@@ -51,13 +59,8 @@ module.exports = function cardModule(now) {
             }
         }
 
-        // generic
-        function applyWithRecord(event) {
-            events.push(event);
-            apply(event);
-        }
-
         return {
+            ...tracker,
             apply,
             assignLimit(amount) {
                 if(limitAlreadyAssigned()) {
@@ -81,24 +84,10 @@ module.exports = function cardModule(now) {
                 const event = {type: CARD_REPAID, amount, card_id: id, date: now().toJSON()};
                 applyWithRecord(event);
             },
-            pendingEvents() {
-                return events;
-            }, // generic
-            flushEvents() {
-                events = [];
-            }, // generic
             uuid() {
                 return id;
             }
         };
     }
-    function recreateFrom(uuid, events) {
-        return events.reduce((card, event) => {
-            card.apply(event);
-            return card;
-        }, card(uuid));
-    }
-
     return {card, recreateFrom};
 };
-
