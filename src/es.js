@@ -17,6 +17,12 @@ function initStore(config = {
         return es.store.disconnect();
     };
 
+    // outbox pattern
+    es.useEventPublisher(function(evt, callback) {
+        console.log('emitting event', evt);
+        callback(); // should be called when message queue ACK'ed message received
+    });
+
     return new Promise(function(resolve, reject) {
         es.init(function (err) {
             if(err) reject(err);
