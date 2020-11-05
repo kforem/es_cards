@@ -3,12 +3,14 @@
     "test": "tape test/*.js | tap-diff"
   },
   "devDependencies": {
+    "supertest": "6.0.1",
     "tap-diff": "0.1.1",
     "tap-nyan": "1.1.0",
     "tape": "5.0.1"
   },
   "dependencies": {
     "eventstore": "1.15.5",
+    "express": "4.17.1",
     "mongodb": "3.6.2"
   }
 }

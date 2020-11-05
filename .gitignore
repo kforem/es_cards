@@ -1,6 +1,2 @@
 node_modules
 .idea
-test/componentTest.js
-src/server.js
-src/app.js
-src/clientError.js
