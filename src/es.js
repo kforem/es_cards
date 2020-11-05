@@ -3,7 +3,7 @@ function initStore() {
         type: 'mongodb',
         host: 'localhost',
         port: 27017,
-        dbName: 'card_eventstore',
+        dbName: 'card_eventstore_payu',
         eventsCollectionName: 'events',
         snapshotsCollectionName: 'snapshots',
         transactionsCollectionName: 'transactions',
@@ -12,6 +12,11 @@ function initStore() {
             useNewUrlParser: true
         }
     });
+
+    es.close = function() {
+        return es.store.disconnect();
+    };
+
     return new Promise(function(resolve, reject) {
         es.init(function (err) {
             if(err) reject(err);

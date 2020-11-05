@@ -30,5 +30,7 @@ test("should be able to save and load credit card", async function (t) {
     c = await repository.load(c.uuid());
     t.equal(c.availableLimit(), 0);
 
+    await es.close();
+
     t.end();
 });
