@@ -6,7 +6,7 @@ module.exports = function cardModule(now) {
 
         let limit;
         let used = 0;
-        const events = [];
+        let events = [];
 
         // invariant
         function limitAlreadyAssigned() {
@@ -64,6 +64,9 @@ module.exports = function cardModule(now) {
             },
             pendingEvents() {
                 return events;
+            },
+            flushEvents() {
+                events = [];
             },
             uuid() {
                 return id;
