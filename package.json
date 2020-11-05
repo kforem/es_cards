@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "tape test/*.js | tap-nyan"
+    "test": "tape test/*.js | tap-diff"
   },
   "devDependencies": {
     "tap-diff": "0.1.1",
