@@ -1,6 +1,24 @@
 const LIMIT_ASSIGNED = 'LIMIT_ASSIGNED';
 const CARD_WITHDRAWN = 'CARD_WITHDRAWN';
 const CARD_REPAID = 'CARD_REPAID';
+
+function eventTracker(apply) {
+    let events = [];
+
+    return {
+        applyWithRecord(event) {
+            events.push(event);
+            return apply(event);
+        },
+        pendingEvents() {
+            return events;
+        },
+        flushEvents() {
+            events = [];
+        }
+    };
+}
+
 module.exports = function cardModule(now) {
     function card(id) {
 
@@ -33,6 +51,7 @@ module.exports = function cardModule(now) {
             }
         }
 
+        // generic
         function applyWithRecord(event) {
             events.push(event);
             apply(event);
@@ -64,10 +83,10 @@ module.exports = function cardModule(now) {
             },
             pendingEvents() {
                 return events;
-            },
+            }, // generic
             flushEvents() {
                 events = [];
-            },
+            }, // generic
             uuid() {
                 return id;
             }
