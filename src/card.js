@@ -28,25 +28,19 @@ module.exports = function cardModule(now) {
     }
 
     function card(id) {
-
         let limit;
         let used = 0;
-        let events = [];
-        let {applyWithRecord, ...tracker} = eventTracker(apply);
+        const {applyWithRecord, ...tracker} = eventTracker(apply);
 
-        // invariant
         function limitAlreadyAssigned() {
             return limit != null;
         }
-
         function notEnoughMoney(amount) {
             return amount > availableLimit();
         }
-
         function availableLimit() {
             return limit - used;
         }
-
         function apply(event) {
             if (event.type === LIMIT_ASSIGNED) {
                 limit = event.amount;
