@@ -1,5 +1,5 @@
 module.exports = function cardModule(now) {
-    return function card(id) {
+    function card(id) {
 
         let limit;
         let used = 0;
@@ -18,7 +18,20 @@ module.exports = function cardModule(now) {
             return limit - used;
         }
 
+        function apply(event) {
+            if (event.type === 'LIMIT_ASSIGNED') {
+                limit = event.amount;
+            }
+            if (event.type === 'CARD_WITHDRAWN') {
+                used += event.amount;
+            }
+            if (event.type === 'CARD_REPAID') {
+                used -= event.amount;
+            }
+        }
+
         return {
+            apply,
             assignLimit(amount) {
                 if(limitAlreadyAssigned()) {
                     throw new Error('Cannot assign limit for the second time');
@@ -49,4 +62,13 @@ module.exports = function cardModule(now) {
             }
         };
     }
+    function recreateFrom(uuid, events) {
+        return events.reduce((card, event) => {
+            card.apply(event);
+            return card;
+        }, card(uuid));
+    }
+
+    return {card, recreateFrom};
 };
+
